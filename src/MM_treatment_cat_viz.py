@@ -230,6 +230,7 @@ data['color']=np.where((data.Group=='Baseline'), '#44841A', data.color)
 # select those variables which are scales, those which are percentages. 
 # only one var is a percentage: out_voice_alt
 
+
 data['ispercentage']='no'
 data['ispercentage']=np.where((data.Variable=='out_voice_alt'), 'yes', data.ispercentage)
 
@@ -244,6 +245,73 @@ scalevariablelist=data_scales['Variable'].unique()
 # make a set for the data that is a proportion
 data_prop=data.loc[data['ispercentage']=='yes']
 propvariablelist=data_prop['Variable'].unique()
+
+
+data_scales=data.loc[data['ispercentage']=='no']
+
+# make a set for the data that is a proportion
+data_prop=data.loc[data['ispercentage']=='yes']
+propvariablelist=data_prop['Variable'].unique()
+
+
+data_scales_p=pd.pivot_table(data_scales, index=['Variable', 'tr_cat', 'Group'])
+
+
+
+#take a set with differences only
+
+#make indexslice 
+idx = pd.IndexSlice
+difference_scales=data_scales_p.loc[idx[:,:,'Difference'],:]
+
+means_scales=data_scales_p.loc[idx[:,:,['Baseline', 'Endline']],:]
+#make a list with scale variables
+
+scalevariablelist=list(data_scales_p.index.get_level_values(0).unique())
+
+#make a list with treatment categories
+catlist=['none', 'only awareness', 'awareness + training','awareness + training + advocacy' ]
+
+#make a new colormap with category labels
+cmaplabel=dict(zip(catlist, list(cmap.values())))
+
+
+
+
+for var in scalevariablelist:
+    for cat in catlist:
+        selmean=means_scales.loc[idx[var,cat,:]].droplevel(0)
+        seldif=difference_scales.loc[idx[var,cat,:]].droplevel(0)
+ 
+    #nrobs=str(int(sel['n'].max()))
+
+
+    #draw out some parameters needed from nested dict
+    param={}
+    param=plotlabels_f_dict[var]
+
+    #init fig
+    fig=plt.figure(figsize=(6.496063, 3.93701))
+    gs = fig.add_gridspec(nrows=4, ncols=2, width_ratios=[2,1], height_ratios=[1]*4)
+    ax1=fig.add_subplot(gs[0,0])
+    cat='none'
+    ax1.set_title(cat, color=cmaplabel[cat])
+    ax2=fig.add_subplot(gs[0,1])
+    ax3=fig.add_subplot(gs[1,0])
+    cat='only awareness'
+    ax3.set_title(cat, color=cmaplabel[cat])
+    ax4=fig.add_subplot(gs[1,1])
+    ax5=fig.add_subplot(gs[2,0])
+    cat='only awareness'
+    ax5.set_title(cat, color=cmaplabel[cat])
+    ax6=fig.add_subplot(gs[2,1])
+    ax7=fig.add_subplot(gs[3,0])
+    cat='awareness + training + advocacy'
+    ax7.set_title('awareness + training + advocacy')
+    ax8=fig.add_subplot(gs[3,1])
+    fig.show()
+
+
 
 
 
