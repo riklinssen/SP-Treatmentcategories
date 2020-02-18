@@ -11,6 +11,7 @@ from matplotlib.dates import DateFormatter
 import matplotlib.patches as mpatches
 import matplotlib.gridspec as gridspec
 import matplotlib.dates as mdates
+from matplotlib.gridspec import GridSpec
 import glob
 
 
@@ -277,11 +278,58 @@ cmaplabel=dict(zip(catlist, list(cmap.values())))
 
 
 
+# for var in scalevariablelist:
+#     selmean=means_scales.loc[idx[var,:,:]].droplevel(0)
+#     seldif=difference_scales.loc[idx[var,:,:]].droplevel(0)
+ 
+#     #nrobs=str(int(sel['n'].max()))
+
+
+#     #draw out some parameters needed from nested dict
+#     param={}
+#     param=plotlabels_f_dict[var]
+
+#     #init fig
+#     fig=plt.figure(figsize=(7, 4))
+#     gs = fig.add_gridspec(nrows=4, ncols=2, width_ratios=[2,1], height_ratios=[1]*4)
+#     ax1=fig.add_subplot(gs[0,0])
+#     cat='none'
+#     ax1.set_title(cat, color=cmaplabel[cat], )
+#     ax1.bar(x=)
+#     x=sel['Group'], height=sel['Mean'], yerr=sel['err'], width=0.5,
+#                   color=sel['color'], alpha=0.4, edgecolor=sel['color'], linewidth=2, ecolor=sel['color'])
+#     ax2=fig.add_subplot(gs[0,1])
+#     ax3=fig.add_subplot(gs[1,0])
+#     cat='only awareness'
+#     ax3.set_title(cat, color=cmaplabel[cat])
+#     ax4=fig.add_subplot(gs[1,1])
+#     ax5=fig.add_subplot(gs[2,0])
+#     cat='awareness + training'
+#     ax5.set_title(cat, color=cmaplabel[cat])
+#     ax6=fig.add_subplot(gs[2,1])
+#     ax7=fig.add_subplot(gs[3,0])
+#     cat='awareness + training + advocacy'
+#     ax7.set_title('awareness + training + advocacy')
+#     ax8=fig.add_subplot(gs[3,1])
+
+#     for ax in fig.axes: 
+#         #spines and offsets
+#         ax.spines['left'].set_visible(True)
+#         ax.spines['top'].set_visible(False)
+#         ax.spines['right'].set_visible(False)
+#         ax.spines["left"].set_position(("outward", +5))
+#         ax.spines["bottom"].set_position(("outward", +5))
+#     plt.subplots_adjust(hspace = 0.5)
+#     #plt.tight_layout()
+#     fig.show()
+
+
+
+
 
 for var in scalevariablelist:
-    for cat in catlist:
-        selmean=means_scales.loc[idx[var,cat,:]].droplevel(0)
-        seldif=difference_scales.loc[idx[var,cat,:]].droplevel(0)
+    selmean=means_scales.loc[idx[var,:,:]].droplevel(0)
+    seldif=difference_scales.loc[idx[var,:,:]].droplevel(0)
  
     #nrobs=str(int(sel['n'].max()))
 
@@ -290,28 +338,26 @@ for var in scalevariablelist:
     param={}
     param=plotlabels_f_dict[var]
 
-    #init fig
-    fig=plt.figure(figsize=(6.496063, 3.93701))
-    gs = fig.add_gridspec(nrows=4, ncols=2, width_ratios=[2,1], height_ratios=[1]*4)
-    ax1=fig.add_subplot(gs[0,0])
-    cat='none'
-    ax1.set_title(cat, color=cmaplabel[cat])
-    ax2=fig.add_subplot(gs[0,1])
-    ax3=fig.add_subplot(gs[1,0])
-    cat='only awareness'
-    ax3.set_title(cat, color=cmaplabel[cat])
-    ax4=fig.add_subplot(gs[1,1])
-    ax5=fig.add_subplot(gs[2,0])
-    cat='only awareness'
-    ax5.set_title(cat, color=cmaplabel[cat])
-    ax6=fig.add_subplot(gs[2,1])
-    ax7=fig.add_subplot(gs[3,0])
-    cat='awareness + training + advocacy'
-    ax7.set_title('awareness + training + advocacy')
-    ax8=fig.add_subplot(gs[3,1])
+    fig=plt.figure(figsize=(7, 4))
+    #create the grid
+    gs=fig.add_gridspec(nrows=4, ncols=2, width_ratios=[2,1], height_ratios=[1]*4)
+    for row in range(4):
+        for cols in range(2): 
+            ax=fig.add_subplot(gs[row,cols])
+    
+    axs=fig.axes
+    
+    #plot left hand graphs
+    for i, cat in zip(range(0, 7, 2), catlist):
+        axs[i].bar(x=selmean.loc[cat].index, height=selmean.loc[cat].Mean, color=cmaplabel[cat])
+        
+
+        
+
+
+
     fig.show()
+    axs=fig.add_subplot(=gs)
 
-
-
-
-
+for i, cat in zip(range(0, 7, 2), catlist):
+    print(i, cat) 
