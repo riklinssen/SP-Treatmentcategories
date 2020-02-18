@@ -242,7 +242,6 @@ data['ispercentage']=np.where((data.Variable=='out_voice_alt'), 'yes', data.ispe
 #make a set for the data that is in some kind of scale
 data_scales=data.loc[data['ispercentage']=='no']
 
-scalevariablelist=data_scales['Variable'].unique()
 # make a set for the data that is a proportion
 data_prop=data.loc[data['ispercentage']=='yes']
 propvariablelist=data_prop['Variable'].unique()
@@ -255,10 +254,9 @@ data_prop=data.loc[data['ispercentage']=='yes']
 propvariablelist=data_prop['Variable'].unique()
 
 
-data_scales_p=pd.pivot_table(data_scales, index=['Variable', 'tr_cat', 'Group'])
+#data_scales_p=pd.pivot_table(data_scales, index=['Variable', 'tr_cat', 'Group'], values=['Mean', 'SE','err','n', 'pvalue', 'color'])
 
-
-
+data_scales_p=data_scales.set_index(['Variable', 'tr_cat', 'Group']).sort_index()
 #take a set with differences only
 
 #make indexslice 
@@ -338,9 +336,9 @@ for var in scalevariablelist:
     param={}
     param=plotlabels_f_dict[var]
 
-    fig=plt.figure(figsize=(7, 4))
+    fig=plt.figure(figsize=(4, 7))
     #create the grid
-    gs=fig.add_gridspec(nrows=4, ncols=2, width_ratios=[2,1], height_ratios=[1]*4)
+    gs=fig.add_gridspec(nrows=4, ncols=2, width_ratios=[1.2,1], height_ratios=[1]*4)
     for row in range(4):
         for cols in range(2): 
             ax=fig.add_subplot(gs[row,cols])
@@ -349,15 +347,27 @@ for var in scalevariablelist:
     
     #plot left hand graphs
     for i, cat in zip(range(0, 7, 2), catlist):
-        axs[i].bar(x=selmean.loc[cat].index, height=selmean.loc[cat].Mean, color=cmaplabel[cat])
+        #plot
+        bars=axs[i].bar(x=selmean.loc[cat].index, height=selmean.loc[cat].Mean, width=0.5,  yerr=selmean.loc[cat].err,
+        color=selmean.loc[cat].color, alpha=0.4, edgecolor=selmean.loc[cat].color, ecolor=selmean.loc[cat].color)
+
+        #title
+        axs[i].set_title(cat, color=cmaplabel[cat], fontsize=10, loc='center')
+
+
+        #yaxis
+        axs[i].set_ylim(param['yminv'], param['ymaxv'])
+        axs[i].set_ylabel(None)
+        axs[i].set_yticks(np.arange(param['yminv'], param['ymaxv']+1, 1))
+        ytick=axs[i].get_yticks().tolist()    
+        ytick[0]=param['yminl']
+        ytick[-1]=param['ymaxl']
+        axs[i].set_yticklabels(ytick, fontsize=8)
         
 
-        
+   
+    #fig.tight_layout(pad=0.4, w_pad=0.5, h_pad=1.0)
+    fig.subplots_adjust(bottom=1, top=3)
 
-
-
-    fig.show()
-    axs=fig.add_subplot(=gs)
-
-for i, cat in zip(range(0, 7, 2), catlist):
-    print(i, cat) 
+    filename=graphs_path/"{}.svg".format(var)
+    plt.savefig(filename, dpi=300, facecolor='w', bbox_inches='tight')
