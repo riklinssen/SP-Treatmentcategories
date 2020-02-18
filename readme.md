@@ -1,4 +1,4 @@
-# Strategic partnership - impact evaluation voice/shifted norms and attitudes  - Myanmar 2019/2020
+  - impact evaluation voice/shifted norms and attitudes  - Myanmar 2019/2020
 
 Code to reproduce analyses and visuals for SP-Myanmar  impact evaluation Burundi 2020 published here <add link>. 
 
@@ -8,7 +8,7 @@ Project is created with:
 - Python 3.8.0 
 
 
-'''
+``` 
 └───src
     │   MM_treatment_cat_viz.py --> script generating visualisations
     │
@@ -17,8 +17,7 @@ Project is created with:
     │
     └───graphs          --> visualisations/ results by treatment category
             
-'''
-
+```
 # Data 
 
 - links to data here (Oxfam novib access only)
