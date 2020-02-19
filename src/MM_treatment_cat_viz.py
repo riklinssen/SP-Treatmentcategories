@@ -336,13 +336,7 @@ for var in scalevariablelist:
     param={}
     param=plotlabels_f_dict[var]
 
-    fig=plt.figure(figsize=(4, 7))
-    #create the grid
-    gs=fig.add_gridspec(nrows=4, ncols=2, width_ratios=[1.2,1], height_ratios=[1]*4)
-    for row in range(4):
-        for cols in range(2): 
-            ax=fig.add_subplot(gs[row,cols])
-    
+    fig, axes = plt.subplots(nrows=4, ncols=2, sharex='col', gridspec_kw={'width_ratios': [1.2, 1]}, figsize=(4, 7))
     axs=fig.axes
     
     #plot left hand graphs
@@ -363,11 +357,28 @@ for var in scalevariablelist:
         ytick[0]=param['yminl']
         ytick[-1]=param['ymaxl']
         axs[i].set_yticklabels(ytick, fontsize=8)
+    
+    #right side (differences)
+    for i,cat in zip(range(1,8,2), catlist):
+        #plot
+        barsh=axs[i].barh(seldif.loc[cat].index, seldif.loc[cat].Mean, height=0.5,  xerr=seldif.loc[cat].err,
+        color=seldif.loc[cat].color, alpha=0.4, edgecolor=seldif.loc[cat].color, ecolor=seldif.loc[cat].color)
+
+
+ 
+         
         
 
    
-    #fig.tight_layout(pad=0.4, w_pad=0.5, h_pad=1.0)
     fig.subplots_adjust(bottom=1, top=3)
 
     filename=graphs_path/"{}.svg".format(var)
     plt.savefig(filename, dpi=300, facecolor='w', bbox_inches='tight')
+
+
+
+
+
+
+
+
