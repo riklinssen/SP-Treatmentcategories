@@ -336,7 +336,7 @@ for var in scalevariablelist:
     param={}
     param=plotlabels_f_dict[var]
 
-    fig, axes = plt.subplots(nrows=4, ncols=2, sharex='col', gridspec_kw={'width_ratios': [1.2, 1]}, figsize=(4, 7))
+    fig, axes = plt.subplots(nrows=4, ncols=2, sharex='col', sharey='row', gridspec_kw={'width_ratios': [1.2, 1]}, figsize=(4, 7))
     axs=fig.axes
     
     #plot left hand graphs
@@ -358,14 +358,11 @@ for var in scalevariablelist:
         ytick[-1]=param['ymaxl']
         axs[i].set_yticklabels(ytick, fontsize=8)
     
-    #right side (differences)
+    # #right side (differences)
     for i,cat in zip(range(1,8,2), catlist):
-        #plot
-        barsh=axs[i].barh(seldif.loc[cat].index, seldif.loc[cat].Mean, height=0.5,  xerr=seldif.loc[cat].err,
-        color=seldif.loc[cat].color, alpha=0.4, edgecolor=seldif.loc[cat].color, ecolor=seldif.loc[cat].color)
-
-
- 
+            #plot
+        bars=axs[i].bar(x=seldif.loc[cat].index, height=seldif.loc[cat].Mean, bottom=selmean.loc[cat, 'Baseline'].Mean, width=0.2,  yerr=seldif.loc[cat].err,
+        color=seldif.loc[cat].color,  ecolor='black')
          
         
 
@@ -378,7 +375,64 @@ for var in scalevariablelist:
 
 
 
+# try plots with dataset with bottoms of bars specified. 
+#add bottom to difference scales=baseline value from means_scales
+difference_scales['bottom']=means_scales.loc[idx[:,:,'Baseline'], 'Mean'].droplevel(2)
+
+for var in scalevariablelist:
+    selmean=means_scales.loc[idx[var,:,:]].droplevel(0)
+    seldif=difference_scales.loc[idx[var,:,:]].droplevel(0)
+
+    #draw out some parameters needed from nested dict
+    param={}
+    param=plotlabels_f_dict[var]
+    #adding bottoms for means (this is equal to the minimum value from the param dict)
+    selmean['bottom']=param['yminv']
+    
+    fig, axes = plt.subplots(nrows=4, ncols=2, sharex='col', sharey='row', gridspec_kw={'width_ratios': [1.2, 1]}, figsize=(4, 7))
+    axs=fig.axes
+    
+    #plot left hand graphs
+    for i, cat in zip(range(0, 7, 2), catlist):
+        
+
+        #plot
+        bars=axs[i].bar(x=selmean.loc[cat].index, height=selmean.loc[cat].Mean, width=0.5,  yerr=selmean.loc[cat].err,
+        color=selmean.loc[cat].color, alpha=0.4, edgecolor=selmean.loc[cat].color, ecolor=selmean.loc[cat].color)
+        #horizontal helper line
+        hlinev=seldif.loc[cat].bottom.values[0]
+        axs[i].axhline(y=hlinev)
+         
+        #title
+        axs[i].set_title(cat, color=cmaplabel[cat], fontsize=10, loc='center')
 
 
+        #yaxis
+        axs[i].set_ylim(param['yminv'], param['ymaxv'])
+        axs[i].set_ylabel(None)
+        axs[i].set_yticks(np.arange(param['yminv'], param['ymaxv']+1, 1))
+        ytick=axs[i].get_yticks().tolist()    
+        ytick[0]=param['yminl']
+        ytick[-1]=param['ymaxl']
+        axs[i].set_yticklabels(ytick, fontsize=8)
+
+        #spines
+        
+
+        
+    # right side (differences)
+    for i,cat in zip(range(1,8,2), catlist):
+            #plot
+        bars=axs[i].bar(x=seldif.loc[cat].index, height=seldif.loc[cat].Mean, bottom=seldif.loc[cat].bottom, width=[0.2],  yerr=seldif.loc[cat].err,
+        color=seldif.loc[cat].color,  ecolor='black')
+        axs[i].set_xlim([lim*1.2 for lim in axs[i].get_xlim()])
+        #horizontal helper line
+        axs[i].axhline(y=hlinev)
+
+    #spines offsets
+    #remove spines
+    for ax in fig.axes:
+
+        
 
 
