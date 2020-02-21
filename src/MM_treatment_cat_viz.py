@@ -767,9 +767,7 @@ for var in scalevariablelist:
     #footnotes
     plt.figtext(-0.3, 0.3, countryname + '\nVertical  bars represent 95% confidence intervals', size='small') 
 
-    filename_a="{}.svg".format(var)
-    filename_b='dif_'+filename_a
-    filename=alt_graphs_path/filename_b
+    filename=alt_graphs_path/"{}.svg".format(var)
     plt.savefig(filename, dpi=300, facecolor='w', bbox_inches='tight')
 
 
