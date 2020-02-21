@@ -178,6 +178,9 @@ src/graphs/*
 src/data/*/*
 !src/data/*/.keep
 
+src/alt_graphs/*
+!src/graphs/.keep
+
 
 
 

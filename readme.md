@@ -7,15 +7,16 @@ Project is created with:
 - STATA 13.1
 - Python 3.8.0 
 
-
+# Structure
 ``` 
 └───src
-    │   MM_treatment_cat_viz.py --> script generating visualisations
+    │   MM_treatment_cat_viz.py --> script wrangling data in shape and generating visualisations
     │
     ├───data            --> input data (csv/xls with propensity score matched estimates generated in Stata) 
     │       
     │
-    └───graphs          --> visualisations/ results by treatment category
+    ├── graphs          --> visualisations (in svg)/ results by treatment category written to this folder
+    ├── alt_graphs      --> alternative graphs (levels & differences seperate)
             
 ```
 # Data 
