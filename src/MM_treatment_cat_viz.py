@@ -35,6 +35,8 @@ import glob
 #cwd means your current working directory.
 # change outfile directories relative to directory of this script. 
 
+countryname='Source: SP MYA R2F surveys, '
+
 base_path = Path.cwd()
 data_path=base_path/"data"
 graphs_path=base_path/"graphs"
@@ -139,12 +141,9 @@ plotlabels_r=results.loc[:,['Variable', 'Group']]
 plotlabels_r.columns=map(str.lower, plotlabels_r.columns)
 
 #new varname, stip and split each element 
-#marieke's stuff can be sliced at position 2 use: 
-#plotlabels_r['varname']=[x.strip()[2:] for x in  plotlabels_r['resultvar']] 
-#check at which position string needs to be sliced. 
-#make new col with resultvar(to avoid confusion across dfs)
-#trim spaces in resultvar & variable
 
+
+#trim spaces in resultvar & variable
 plotlabels_r['resultvar']=plotlabels_r['variable'].apply(lambda x: x.strip())
 plotlabels_r=plotlabels_r.drop(columns=['variable'])
 
@@ -276,6 +275,45 @@ cmaplabel=dict(zip(catlist, list(cmap.values())))
 
 
 
+def autolabel(bars, xpos='center'):
+    """
+    Attach a text label above each bar in *ax*, displaying its height.
+
+    *xpos* indicates which side to place the text w.r.t. the center of
+    the bar. It can be one of the following {'center', 'right', 'left'}.
+    """
+
+    xpos = xpos.lower()  # normalize the case of the parameter
+    ha = {'center': 'center', 'right': 'left', 'left': 'right'}
+    offset = {'center': 0.5, 'right': 0.57, 'left': 0.43}  # x_txt = x + w*off
+
+    for bar in bars:
+        height = round(bar.get_height(),1)
+        axs[i].text(bar.get_x() + bar.get_width()*offset[xpos], 1.01*height,
+                '{}'.format(height), ha=ha[xpos], va='bottom', color=bar.get_edgecolor(), alpha=1)
+
+
+
+
+def autolabeldf(bars, xpos='center'):
+    """
+    Attach a text label above each difference bar in *ax*, displaying its height for difference bars (includes bottom)
+
+    *xpos* indicates which side to place the text w.r.t. the center of
+    the bar. It can be one of the following {'center', 'right', 'left'}.
+    """
+
+    xpos = xpos.lower()  # normalize the case of the parameter
+    ha = {'center': 'center', 'right': 'left', 'left': 'right'}
+    offset = {'center': 0.5, 'right': 0.57, 'left': 0.43}  # x_txt = x + w*off
+
+    for bar in bars:
+        value=round(bar.get_height(),1)
+        height = bar.get_height() + bar.get_y()
+        axs[i].text(bar.get_x() + bar.get_width()*offset[xpos], 1.01*height,
+                '{}'.format(value), ha=ha[xpos], va='bottom', color=bar.get_facecolor(), alpha=1)
+
+
 # for var in scalevariablelist:
 #     selmean=means_scales.loc[idx[var,:,:]].droplevel(0)
 #     seldif=difference_scales.loc[idx[var,:,:]].droplevel(0)
@@ -325,52 +363,52 @@ cmaplabel=dict(zip(catlist, list(cmap.values())))
 
 
 
-for var in scalevariablelist:
-    selmean=means_scales.loc[idx[var,:,:]].droplevel(0)
-    seldif=difference_scales.loc[idx[var,:,:]].droplevel(0)
+# for var in scalevariablelist:
+#     selmean=means_scales.loc[idx[var,:,:]].droplevel(0)
+#     seldif=difference_scales.loc[idx[var,:,:]].droplevel(0)
  
-    #nrobs=str(int(sel['n'].max()))
+#     #nrobs=str(int(sel['n'].max()))
 
 
-    #draw out some parameters needed from nested dict
-    param={}
-    param=plotlabels_f_dict[var]
+#     #draw out some parameters needed from nested dict
+#     param={}
+#     param=plotlabels_f_dict[var]
 
-    fig, axes = plt.subplots(nrows=4, ncols=2, sharex='col', sharey='row', gridspec_kw={'width_ratios': [1.2, 1]}, figsize=(4, 7))
-    axs=fig.axes
+#     fig, axes = plt.subplots(nrows=4, ncols=2, sharex='col', sharey='row', gridspec_kw={'width_ratios': [1.2, 1]}, figsize=(4, 7))
+#     axs=fig.axes
     
-    #plot left hand graphs
-    for i, cat in zip(range(0, 7, 2), catlist):
-        #plot
-        bars=axs[i].bar(x=selmean.loc[cat].index, height=selmean.loc[cat].Mean, width=0.5,  yerr=selmean.loc[cat].err,
-        color=selmean.loc[cat].color, alpha=0.4, edgecolor=selmean.loc[cat].color, ecolor=selmean.loc[cat].color)
+#     #plot left hand graphs
+#     for i, cat in zip(range(0, 7, 2), catlist):
+#         #plot
+#         bars=axs[i].bar(x=selmean.loc[cat].index, height=selmean.loc[cat].Mean, width=0.5,  yerr=selmean.loc[cat].err,
+#         color=selmean.loc[cat].color, alpha=0.4, edgecolor=selmean.loc[cat].color, ecolor=selmean.loc[cat].color)
 
-        #title
-        axs[i].set_title(cat, color=cmaplabel[cat], fontsize=10, loc='center')
+#         #title
+#         axs[i].set_title(cat, color=cmaplabel[cat], fontsize=10, loc='center')
 
 
-        #yaxis
-        axs[i].set_ylim(param['yminv'], param['ymaxv'])
-        axs[i].set_ylabel(None)
-        axs[i].set_yticks(np.arange(param['yminv'], param['ymaxv']+1, 1))
-        ytick=axs[i].get_yticks().tolist()    
-        ytick[0]=param['yminl']
-        ytick[-1]=param['ymaxl']
-        axs[i].set_yticklabels(ytick, fontsize=8)
+#         #yaxis
+#         axs[i].set_ylim(param['yminv'], param['ymaxv'])
+#         axs[i].set_ylabel(None)
+#         axs[i].set_yticks(np.arange(param['yminv'], param['ymaxv']+1, 1))
+#         ytick=axs[i].get_yticks().tolist()    
+#         ytick[0]=param['yminl']
+#         ytick[-1]=param['ymaxl']
+#         axs[i].set_yticklabels(ytick, fontsize=8)
     
-    # #right side (differences)
-    for i,cat in zip(range(1,8,2), catlist):
-            #plot
-        bars=axs[i].bar(x=seldif.loc[cat].index, height=seldif.loc[cat].Mean, bottom=selmean.loc[cat, 'Baseline'].Mean, width=0.2,  yerr=seldif.loc[cat].err,
-        color=seldif.loc[cat].color,  ecolor='black')
+#     # #right side (differences)
+#     for i,cat in zip(range(1,8,2), catlist):
+#             #plot
+#         bars=axs[i].bar(x=seldif.loc[cat].index, height=seldif.loc[cat].Mean, bottom=selmean.loc[cat, 'Baseline'].Mean, width=0.2,  yerr=seldif.loc[cat].err,
+#         color=seldif.loc[cat].color,  ecolor='black')
          
         
 
    
-    fig.subplots_adjust(bottom=1, top=3)
+#     fig.subplots_adjust(bottom=1, top=3)
 
-    filename=graphs_path/"{}.svg".format(var)
-    plt.savefig(filename, dpi=300, facecolor='w', bbox_inches='tight')
+#     filename=graphs_path/"{}.svg".format(var)
+#     plt.savefig(filename, dpi=300, facecolor='w', bbox_inches='tight')
 
 
 
@@ -389,22 +427,23 @@ for var in scalevariablelist:
     #adding bottoms for means (this is equal to the minimum value from the param dict)
     selmean['bottom']=param['yminv']
     
-    fig, axes = plt.subplots(nrows=4, ncols=2, sharex='col', sharey='row', gridspec_kw={'width_ratios': [1.2, 1]}, figsize=(4, 7))
+    fig, axes = plt.subplots(nrows=4, ncols=2, sharex='col', sharey='row', gridspec_kw={'width_ratios': [1, 1], 'wspace':0.1} , figsize=(4, 7))
     axs=fig.axes
     
     #plot left hand graphs
     for i, cat in zip(range(0, 7, 2), catlist):
         
-
         #plot
-        bars=axs[i].bar(x=selmean.loc[cat].index, height=selmean.loc[cat].Mean, width=0.5,  yerr=selmean.loc[cat].err,
-        color=selmean.loc[cat].color, alpha=0.4, edgecolor=selmean.loc[cat].color, ecolor=selmean.loc[cat].color)
+        barsl=axs[i].bar(x=selmean.loc[cat].index, height=selmean.loc[cat].Mean, width=0.5,  color=selmean.loc[cat].color, alpha=0.4, edgecolor=selmean.loc[cat].color)
+        
+        #labels
+        autolabel(barsl, 'center')
+        
         #horizontal helper line
-        hlinev=seldif.loc[cat].bottom.values[0]
-        axs[i].axhline(y=hlinev)
+        axs[i].axhline(y=selmean.loc[cat,'Baseline'].Mean, color='#44841A', ls=':')
          
         #title
-        axs[i].set_title(cat, color=cmaplabel[cat], fontsize=10, loc='center')
+        axs[i].set_title(cat, color=cmaplabel[cat], fontsize=12, loc='left')
 
 
         #yaxis
@@ -415,23 +454,57 @@ for var in scalevariablelist:
         ytick[0]=param['yminl']
         ytick[-1]=param['ymaxl']
         axs[i].set_yticklabels(ytick, fontsize=8)
+        #xaxis
+        axs[i].get_xaxis().set_visible(True)
+        axs[i].tick_params(axis='x', labelbottom=True, )
+
+
 
         #spines
+        axs[i].spines['left'].set_visible(True)
+        axs[i].spines['top'].set_visible(False)
+        axs[i].spines['right'].set_visible(False)
+        axs[i].spines["left"].set_position(("outward", +5))
+        
         
 
         
     # right side (differences)
     for i,cat in zip(range(1,8,2), catlist):
-            #plot
-        bars=axs[i].bar(x=seldif.loc[cat].index, height=seldif.loc[cat].Mean, bottom=seldif.loc[cat].bottom, width=[0.2],  yerr=seldif.loc[cat].err,
-        color=seldif.loc[cat].color,  ecolor='black')
-        axs[i].set_xlim([lim*1.2 for lim in axs[i].get_xlim()])
-        #horizontal helper line
-        axs[i].axhline(y=hlinev)
+        #plot
+        if seldif.loc[cat, 'Difference'].pvalue<0.05:
+            bars=axs[i].bar(x=seldif.loc[cat].index, height=seldif.loc[cat].Mean, bottom=seldif.loc[cat].bottom, width=[0.2], color=seldif.loc[cat].color,
+            yerr=seldif.loc[cat].err, ecolor='#E43989')
+            #labels (significant onlye)
+            autolabeldf(bars, 'right')
+        else:
+            bars=axs[i].bar(x=seldif.loc[cat].index, height=seldif.loc[cat].Mean, bottom=seldif.loc[cat].bottom, width=[0.2],  yerr=seldif.loc[cat].err,
+            color='lightgrey', ecolor='lightgray')
 
-    #spines offsets
-    #remove spines
-    for ax in fig.axes:
+        #horizontal helper line
+        axs[i].axhline(y=seldif.loc[cat, 'Difference'].bottom, color='#44841A', ls=':')
+        #yaxis
+        axs[i].get_yaxis().set_visible(False)
+        #xaxis
+        axs[i].set_xlim([lim*1.3 for lim in axs[i].get_xlim()])
+        axs[i].tick_params(axis='x', labelbottom=True)
+        
+
+
+        #spines
+        axs[i].spines['left'].set_visible(False)
+        axs[i].spines['top'].set_visible(False)
+        axs[i].spines['right'].set_visible(False)
+    #adjust spacing 
+    fig.subplots_adjust(bottom=0.5, top=3)
+
+    #footnotes
+    plt.figtext(-0.3, 0.3, countryname + '\nVertical  bars represent 95% confidence intervals. \nDifferences that are not statistically signficant at p<0.05 greyed out', size='small') 
+
+
+    filename=graphs_path/"{}.svg".format(var)
+    plt.savefig(filename, dpi=300, facecolor='w', bbox_inches='tight')
+
 
         
 
