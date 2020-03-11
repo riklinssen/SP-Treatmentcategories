@@ -45,7 +45,9 @@ alt_graphs_path=base_path/"alt_graphs" #for alternative graphs
 csvfiles = glob.glob("data\*.csv")
 dflist=[]
 for f in csvfiles: 
-    name=f[-14:-4]
+    name=f[12:16]
+    print(name)
+
     df=((pd.read_csv(f, sep=';', decimal=',', header=0))
     .rename(columns=str.lower)
     .assign(category_nr=lambda x: name)
@@ -207,10 +209,12 @@ plotlabels_f_dict=plotlabels_figs.set_index('resultvar').to_dict(orient='index')
 
 ###############
 ## try plots. 
+results['err']=results['CI_upperbound']-results['Mean']
 
-resultdata=results.copy()
+avg=results.loc[results.group.isin(['PIP'+ str(i) for i in range(1,5)])]
+dif=results.loc[results.group =='Difference']
 
-resultdata['err']=resultdata['CI_upperbound']-resultdata['Mean']
+
 
 
 ##Now load in data tovisualise
