@@ -1,6 +1,6 @@
   - impact evaluation voice/shifted norms and attitudes  - Myanmar 2019/2020
 
-Code to reproduce analyses and visuals for SP-Myanmar analyses treatment categories. <add link>. 
+Code to reproduce analyses and visuals for Strategic Partnership impact evaluations, disaggregation based on treatment categories, based on data from Myanmar, expanded to Vietnam. <add link>. 
 
 # Technologies
 Project is created with: 
