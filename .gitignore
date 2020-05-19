@@ -175,8 +175,9 @@ notebooks/graphs
 #data & graph folders (keep structure, not files in src) 
 src/graphs/*
 !src/graphs/.keep
-src/data/*/*
+src/data/*
 !src/data/*/.keep
+!src/data/vnm/.keep
 
 src/alt_graphs/*
 !src/graphs/.keep

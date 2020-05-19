@@ -12,7 +12,8 @@ Project is created with:
 └───src
     │   MM_treatment_cat_viz.py --> script wrangling data in shape and generating visualisations
     │
-    ├───data            --> input data (csv/xls with propensity score matched estimates generated in Stata) 
+    ├───data            --> input data (csv/xls with propensity score matched estimates generated in Stata)
+        ├── vnm         --> input data for vietnam 
     │       
     │
     ├── graphs          --> visualisations (in svg)/ results by treatment category written to this folder
