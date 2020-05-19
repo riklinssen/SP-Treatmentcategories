@@ -13,7 +13,7 @@ import matplotlib.gridspec as gridspec
 import matplotlib.dates as mdates
 from matplotlib.gridspec import GridSpec
 import glob
-
+import getpass
 
 
 ###visualisations SP graphs. 
@@ -39,8 +39,9 @@ countryname='Source: SP VNM R2F surveys, '
 
 base_path = Path.cwd()
 data_path=base_path/"data/vnm"
-graphs_path=base_path/"graphs"
-alt_graphs_path=base_path/"alt_graphs" #for alternative graphs
+#####enter graphs path on box below. #####
+
+graphs_path=Path(r"C:\Users\RikL\Box\ONL-IMK\2.0 Projects\Current\16-01 SP\Vietnam\Endline survey\Data and data analysis\Graphs\treatment_categories")
 
 csvfiles = glob.glob("data/vnm/*.csv")
 dflist=[]
@@ -457,7 +458,7 @@ for var in propvariablelist:
 
     #footnotes
     plt.figtext(-0.3, 0.3, countryname + '\nVertical  bars represent 95% confidence intervals', size='small') 
-    filename=alt_graphs_path/"{}.svg".format(var)
+    filename=graphs_path/"{}.svg".format(var)
     plt.savefig(filename, dpi=300, facecolor='w', bbox_inches='tight')
 
 
@@ -524,7 +525,7 @@ for var in propvariablelist:
 
     filename_a="{}.svg".format(var)
     filename_b='dif_'+filename_a
-    filename=alt_graphs_path/filename_b
+    filename=graphs_path/filename_b
     plt.savefig(filename, dpi=300, facecolor='w', bbox_inches='tight')
 
 
@@ -586,7 +587,7 @@ for var in scalevariablelist:
     #footnotes
     plt.figtext(-0.3, 0.3, countryname + '\nVertical  bars represent 95% confidence intervals', size='small') 
 
-    filename=alt_graphs_path/"{}.svg".format(var)
+    filename=graphs_path/"{}.svg".format(var)
     plt.savefig(filename, dpi=300, facecolor='w', bbox_inches='tight')
 
 
@@ -645,7 +646,7 @@ for var in scalevariablelist:
 
     filename_a="{}.svg".format(var)
     filename_b='dif_'+filename_a
-    filename=alt_graphs_path/filename_b
+    filename=graphs_path/filename_b
     plt.savefig(filename, dpi=300, facecolor='w', bbox_inches='tight')
 
 
